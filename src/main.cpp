@@ -91,13 +91,8 @@ int main(int argc, char **argv)
     while(inputBuffer != "quit")
     {
         sleep(1);
-        if(netFetch->lines != 0)
-        {
-            *console << "[" << netAddress << ":" << netPort << "]$ ";
-            *console >> inputBuffer;
-            rcClient->WriteStream(inputBuffer);
-            netFetch->lines = 0;
-        }
+        *console >> inputBuffer;
+        rcClient->WriteStream(inputBuffer);
     }
     rcClient->Close();
     return 0;

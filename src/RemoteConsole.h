@@ -10,9 +10,9 @@
 class RemoteConsole
 {
 private:
-    QString Address;
-    int Port;
-    int State = 0;
+    QString sAddress;
+    int iPort;
+    int iState = 0;
     QTcpSocket socket;
 public:
     RemoteConsole();
@@ -22,6 +22,9 @@ public:
     QString ReadStream();
     int WriteStream(QString send);
     void Close();
+
+    QString getAddress();
+    QString getPort();
 
     bool isOnline();
 };

@@ -13,20 +13,22 @@ RemoteConsole::RemoteConsole(QString _Address, int _Port)
 
 int RemoteConsole::Connect(QString address, int port)
 {
+    sAddress = address;
+    iPort = port;
     LOG("[NET] Connecting to server socket...");
-    if (State == 0)  //Disconnected
+    if (iState == 0)  //Disconnected
     {
         socket.connectToHost(address, port);
 
         if (!socket.waitForConnected(SEC_TIMEOUT))
         {
-
+            QConsole() << "Impossible reach host!\n";
             LOG("[NET] Connection timeout!");
-            State = 2; //Timeout
+            iState = 2; //Timeout
             return -1;
         }
         LOG("[NET] Connected to server!");
-        State = 1; //Connected
+        iState = 1; //Connected
         return 0;
     }
     LOG("[NET] Already connected!");
@@ -47,10 +49,10 @@ int RemoteConsole::Login(QString passwd)
     WriteStream(passwd); //gli invio la password
     ReadStream();
     data = ReadStream();//ottengo il risultato della connessione:
-    if (data == "Incorrect login\n\n\r")// se mi richiede il login: vuol dire che è sbagliata la password
+    if (data == "login: \r")// se mi richiede il login: vuol dire che è sbagliata la password
     {
         LOG("[NET] Login failed!");
-        QConsole() << "Wrong Password!" << "\n";
+        QConsole() << "\nWrong Password!\n";
         return -1;
     }
     LOG("[NET] Connection authenticated!");
@@ -82,11 +84,14 @@ int RemoteConsole::WriteStream(QString send)
 void RemoteConsole::Close()
 {
      LOG("[NET] Closing socket!");
-    State = 0;
+    iState = 0;
     socket.close();
 }
 
 bool RemoteConsole::isOnline()
 {
-    return State == 1;
+    return iState == 1;
 }
+
+QString RemoteConsole::getAddress() { return sAddress; }
+QString RemoteConsole::getPort() { return QString::number(iPort); }

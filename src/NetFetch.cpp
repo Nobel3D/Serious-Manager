@@ -12,10 +12,15 @@ void NetFetch::run()
     while(cStream->isOnline())
     {
          buffer = cStream->ReadStream();
-         if(!buffer.startsWith('>'))
+         if(!buffer.startsWith('>') && buffer != "")
          {
              lines++;
              QConsole() << buffer;
+         }
+         if(lines != 0 && buffer == "")
+         {
+             QConsole() << "[" << cStream->getAddress() << ":" << cStream->getPort() << "]$ ";
+             lines = 0;
          }
     }
 }
