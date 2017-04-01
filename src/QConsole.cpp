@@ -1,8 +1,9 @@
 #include "QConsole.h"
 #include <unistd.h>
-#include <term.h>
-#include <sys/ioctl.h>
-
+#ifdef LINUX
+    #include <term.h>
+    #include <sys/ioctl.h>
+#endif
 QConsole::QConsole()
 {
     out = new QTextStream(stdout, QIODevice::WriteOnly);
@@ -20,6 +21,7 @@ void QConsole::Read(QString& text)
     text = in->readLine();
 }
 
+#ifdef LINUX
 void QConsole::setXY(int x, int y)
 {
   int err;
@@ -35,6 +37,7 @@ void QConsole::getXY(int& x, int& y)
     y = w.ws_row;
     x = w.ws_col;
 }
+#endif
 QConsole& QConsole::operator <<(QString text)
 {
     Write(text);

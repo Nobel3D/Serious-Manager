@@ -33,4 +33,4 @@ HEADERS += src/RemoteConsole.h \
     src/NetFetch.h \
     src/QLog.h
 
-LIBS += -lcurses -lncurses
+unix: LIBS += -lcurses -lncurses

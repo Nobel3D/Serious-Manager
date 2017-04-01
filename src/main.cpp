@@ -2,12 +2,29 @@
 #include <QDebug>
 #include <QThread>
 #include <iostream>
-#include <termios.h>
 #include <unistd.h>
 #include "RemoteConsole.h"
 #include "QConsole.h"
 #include "NetFetch.h"
 
+#ifdef WIN32
+    #include<conio.h>
+#endif
+#ifdef LINUX
+    #include <termios.h>
+    int getch(void)
+    {
+        struct termios oldattr, newattr;
+        int ch;
+        tcgetattr( STDIN_FILENO, &oldattr );
+        newattr = oldattr;
+        newattr.c_lflag &= ~( ICANON | ECHO );
+        tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+        ch = getchar();
+        tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+        return ch;
+    }
+#endif
 #define CERROR(check, text) { if(check) { qWarning() << "[ERR] " << text << endl; \
                                           return -1; }                      }
 
@@ -15,6 +32,7 @@
 
 #define endl "\n"
 
+#define ENTER_KEY 13
 using namespace std;
 
 QString sysApp;
@@ -40,28 +58,16 @@ int getArgs(int argc, char **argv)
     return OK;
 }
 
-int getch(void)
-{
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldattr );
-    newattr = oldattr;
-    newattr.c_lflag &= ~( ICANON | ECHO );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-    return ch;
-}
-
 
 void getPasswd()
 {
     char ch;
     if(netPasswd == "")
     {
-        while(ch != 13){
+        while(true){
             ch = getch();
-            if(ch == 10) return;
+            if(ch == ENTER_KEY)
+                return;
             netPasswd.append(ch);
             *console << "*";
         }
