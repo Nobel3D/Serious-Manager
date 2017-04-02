@@ -9,9 +9,11 @@
 
 #ifdef WIN32
     #include<conio.h>
+    #define ENTER_KEY 13
 #endif
-#ifdef LINUX
+#ifdef linux
     #include <termios.h>
+    #define ENTER_KEY 10
     int getch(void)
     {
         struct termios oldattr, newattr;
@@ -32,7 +34,6 @@
 
 #define endl "\n"
 
-#define ENTER_KEY 13
 using namespace std;
 
 QString sysApp;

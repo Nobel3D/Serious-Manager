@@ -1,6 +1,6 @@
 #include "QConsole.h"
 #include <unistd.h>
-#ifdef LINUX
+#ifdef linux
     #include <term.h>
     #include <sys/ioctl.h>
 #endif
@@ -21,7 +21,7 @@ void QConsole::Read(QString& text)
     text = in->readLine();
 }
 
-#ifdef LINUX
+#ifdef linux
 void QConsole::setXY(int x, int y)
 {
   int err;
