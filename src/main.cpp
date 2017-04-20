@@ -3,9 +3,9 @@
 #include <QThread>
 #include <iostream>
 #include <unistd.h>
-#include "RemoteConsole.h"
-#include "QConsole.h"
-#include "NetFetch.h"
+#include "rcon.h"
+#include "xsconsole.h"
+#include "fetch.h"
 
 #ifdef WIN32
     #include<conio.h>
@@ -42,9 +42,8 @@ QString netAddress;
 QString netPasswd;
 QString netPort;
 
-RemoteConsole* rcClient;
-NetFetch* netFetch;
-QConsole* console;
+Rcon* rcClient;
+Fetch* input;
 
 QString inputBuffer;
 
@@ -70,35 +69,34 @@ void getPasswd()
             if(ch == ENTER_KEY)
                 return;
             netPasswd.append(ch);
-            *console << "*";
+            xsConsole() << "*";
         }
     }
 }
 
 int main(int argc, char **argv)
 {
-    console = new QConsole;
     CERROR(argc < 3, "Insufficient arguments!");
     getArgs(argc,argv);
-    *console << "Serious Manager " << sysVersion << " by Luca \"Nobel3D\" Gasperini" << endl;
-    *console << QString("Trying to connect: ") + netAddress + "\n";
-    rcClient = new RemoteConsole;
+    xsConsole() << "Serious Manager " << sysVersion << " by Luca \"Nobel3D\" Gasperini" << endl;
+    xsConsole() << QString("Trying to connect: ") + netAddress + "\n";
+    rcClient = new Rcon;
     if(rcClient->Connect(netAddress, netPort.toInt()) != 0)
         return 0;
 
-    *console << "Login -> ";
+    xsConsole() << "Login -> ";
     getPasswd();
     if(rcClient->Login(netPasswd) != 0)
         return 0;
-    *console << endl;
+    xsConsole() << endl;
 
-    netFetch = new NetFetch(rcClient);
-    netFetch->start();
+    input = new Fetch(rcClient);
+    input->start();
 
     while(inputBuffer != "quit")
     {
         sleep(1);
-        *console >> inputBuffer;
+        xsConsole() >> inputBuffer;
         rcClient->WriteStream(inputBuffer);
     }
     rcClient->Close();

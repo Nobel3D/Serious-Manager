@@ -1,13 +1,13 @@
-#ifndef REMOTECONSOLE_H
-#define REMOTECONSOLE_H
+#ifndef RCON_H
+#define RCON_H
 #include <QCoreApplication>
 #include <QTcpSocket>
 #include <QMessageLogger>
-#include "QLog.h"
+#include <xslib/xslog.h>
 
 #define SEC_TIMEOUT 5000
-#define LOG(mesg){ QLog::addLog("sm.log", mesg); }
-class RemoteConsole
+#define LOG(mesg){ xsLog::addLog("sm.log", mesg); }
+class Rcon
 {
 private:
     QString sAddress;
@@ -15,8 +15,8 @@ private:
     int iState = 0;
     QTcpSocket socket;
 public:
-    RemoteConsole();
-    RemoteConsole(QString _Address, int _Port);
+    Rcon();
+    Rcon(QString _Address, int _Port);
     int Connect(QString address, int port);
     int Login(QString passwd);
     QString ReadStream();
@@ -29,4 +29,4 @@ public:
     bool isOnline();
 };
 
-#endif // REMOTECONSOLE_H
+#endif // RCON_H

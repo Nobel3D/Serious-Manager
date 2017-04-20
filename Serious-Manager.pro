@@ -12,10 +12,8 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += src/main.cpp \
-    src/RemoteConsole.cpp \
-    src/QConsole.cpp \
-    src/NetFetch.cpp \
-    src/QLog.cpp
+    src/fetch.cpp \
+    src/rcon.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -28,9 +26,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-HEADERS += src/RemoteConsole.h \
-    src/QConsole.h \
-    src/NetFetch.h \
-    src/QLog.h
+HEADERS += \
+    src/fetch.h \
+    src/rcon.h
 
 unix: LIBS += -lcurses -lncurses
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/release/ -lxs
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/debug/ -lxs
+else:unix: LIBS += -L$$PWD/../../../../../usr/lib/ -lxs
+
+INCLUDEPATH += /usr/include/xslib
+DEPENDPATH += /usr/include/xslib

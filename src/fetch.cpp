@@ -1,12 +1,12 @@
-#include "NetFetch.h"
+#include "fetch.h"
 
-NetFetch::NetFetch(RemoteConsole* stream)
+Fetch::Fetch(Rcon* stream)
 {
     //QMessageLogger("")
     cStream = stream;
 }
 
-void NetFetch::run()
+void Fetch::run()
 {
     QString buffer;
     while(cStream->isOnline())
@@ -15,11 +15,11 @@ void NetFetch::run()
          if(!buffer.startsWith('>') && buffer != "")
          {
              lines++;
-             QConsole() << buffer;
+             xsConsole() << buffer;
          }
          if(lines != 0 && buffer == "")
          {
-             QConsole() << "[" << cStream->getAddress() << ":" << cStream->getPort() << "]$ ";
+             xsConsole() << "[" << cStream->getAddress() << ":" << cStream->getPort() << "]$ ";
              lines = 0;
          }
     }

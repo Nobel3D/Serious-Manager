@@ -1,0 +1,4 @@
+ 
+qmake Serious-Manager.pro -spec linux-g++
+make
+cp Serious-Manager /usr/bin

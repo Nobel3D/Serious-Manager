@@ -1,17 +1,17 @@
-#include "RemoteConsole.h"
-#include "QConsole.h"
+#include "rcon.h"
+#include <xslib/xsconsole.h>
 #include <QtNetwork>
 
-RemoteConsole::RemoteConsole()
+Rcon::Rcon()
 {
 }
 
-RemoteConsole::RemoteConsole(QString _Address, int _Port)
+Rcon::Rcon(QString _Address, int _Port)
 {
     Connect(_Address, _Port);
 }
 
-int RemoteConsole::Connect(QString address, int port)
+int Rcon::Connect(QString address, int port)
 {
     sAddress = address;
     iPort = port;
@@ -22,7 +22,7 @@ int RemoteConsole::Connect(QString address, int port)
 
         if (!socket.waitForConnected(SEC_TIMEOUT))
         {
-            QConsole() << "Impossible reach host!\n";
+            xsConsole() << "Impossible reach host!\n";
             LOG("[NET] Connection timeout!");
             iState = 2; //Timeout
             return -1;
@@ -35,14 +35,14 @@ int RemoteConsole::Connect(QString address, int port)
     return -1;
 }
 
-int RemoteConsole::Login(QString passwd)
+int Rcon::Login(QString passwd)
 {
     LOG("[NET] Trying to login...");
     QString data;
     do
     {
         data = ReadStream();
-    }while(data != "login: \r");
+    }while(data != "login: \r" && data != "");
     ReadStream();
     ReadStream();
     ReadStream();
@@ -52,14 +52,14 @@ int RemoteConsole::Login(QString passwd)
     if (data == "login: \r")// se mi richiede il login: vuol dire che è sbagliata la password
     {
         LOG("[NET] Login failed!");
-        QConsole() << "\nWrong Password!\n";
+        xsConsole() << "\nWrong Password!\n";
         return -1;
     }
     LOG("[NET] Connection authenticated!");
     return 0;
 }
 
-QString RemoteConsole::ReadStream()
+QString Rcon::ReadStream()
 {
     char buffer;
     QString strout;
@@ -73,7 +73,7 @@ QString RemoteConsole::ReadStream()
     return strout;
 }
 
-int RemoteConsole::WriteStream(QString send)
+int Rcon::WriteStream(QString send)
 {
     send.append("\r");
     socket.write( send.toUtf8() );
@@ -81,17 +81,17 @@ int RemoteConsole::WriteStream(QString send)
     return 0;
 }
 
-void RemoteConsole::Close()
+void Rcon::Close()
 {
      LOG("[NET] Closing socket!");
     iState = 0;
     socket.close();
 }
 
-bool RemoteConsole::isOnline()
+bool Rcon::isOnline()
 {
     return iState == 1;
 }
 
-QString RemoteConsole::getAddress() { return sAddress; }
-QString RemoteConsole::getPort() { return QString::number(iPort); }
+QString Rcon::getAddress() { return sAddress; }
+QString Rcon::getPort() { return QString::number(iPort); }
