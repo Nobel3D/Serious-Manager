@@ -1,0 +1,6 @@
+[submodule "lib"]
+	path = lib
+	url = https://github.com/Nobel3D/xslibSamServer
+[submodule "cli"]
+	path = cli
+	url = https://github.com/Nobel3D/xsSamServer-cli
