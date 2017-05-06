@@ -4,3 +4,6 @@
 [submodule "cli"]
 	path = cli
 	url = https://github.com/Nobel3D/xsSamServer-cli
+[submodule "daemon"]
+	path = daemon
+	url = https://github.com/nobel3d/xsSamDaemon
